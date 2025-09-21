@@ -4,162 +4,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acoman Dashboard</title>
+    <title>{{ $title ?? 'Acoman Dashboard' }}</title>
     <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
     <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-    @vite('resources/css/app.css')
-    <style>
-        /* Hide sidebar by default on small screens */
-        #sidebar {
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-
-        #sidebar.open {
-            transform: translateX(0);
-        }
-
-        @media (min-width: 1024px) {
-            #sidebar {
-                transform: translateX(0%);
-                transition: transform 0.3s ease;
-            }
-        }
-    </style>
+    @if(env('APP_ENV') == 'production')
+    <link rel="stylesheet" href="{{ asset('build/assets/app-DDxjqB61.css') }}">
+    @else
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     @livewireStyles
-</head>
+    @stack('styles')
 </head>
 
-<body class="bg-gray-100 font-sans">
-    <!-- Sidebar -->
-    <div class="flex w-full h-screen">
-        <aside id="sidebar" class="w-64 bg-white shadow-md flex flex-col fixed lg:static h-full z-50 lg:transform-none">
-            <div class="p-4 flex items-center justify-between gap-2">
-                <img src="{{ asset('./images/logos/logo_acoman_small.jpg') }}" alt="Acoman" class="block mx-auto w-32">
-                <svg xmlns="http://www.w3.org/2000/svg" id="menuCloseButton" width="24" height="24"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" class="lucide lucide-move-left cursor-pointer lg:hidden">
-                    <path d="M6 8L2 12L6 16" />
-                    <path d="M2 12H22" />
-                </svg>
+<body class="font-inter bg-gray-50 antialiased">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+    <aside id="sidebar" class="w-72 min-h-screen bg-white shadow-lg transform transition-transform duration-300 ease-in-out fixed lg:static h-full z-50 flex flex-col lg:translate-x-0">
+            <!-- Logo & User Profile -->
+            <div class="flex flex-col px-6 py-2 border-b border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <img src="{{ asset('./images/logos/logo_acoman_small.jpg') }}" alt="Acoman" class="h-18 block mx-auto w-auto">
+                    <button id="menuCloseButton" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-times text-gray-600"></i>
+                    </button>
+                </div>
+                
+                <!-- User Profile Card -->
+                <!--<div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl">
+                    <div class="relative">
+                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=4f46e5&color=ffffff&size=40" 
+                             alt="User" class="w-10 h-10 rounded-full ring-2 ring-white shadow-sm">
+                        <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-900 truncate">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role ?? 'Administrador' }}</p>
+                    </div>
+                </div>-->
             </div>
-            <nav class="flex-1 mt-6">
-                <ul class="space-y-4">
-                    <li><a href="{{ url('administrador/dashboard') }}"
-                            class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded gap-2"><svg
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-gauge">
-                                <path d="m12 14 4-4" />
-                                <path d="M3.34 19a10 10 0 1 1 17.32 0" />
-                            </svg><span>Dashboard</span></a>
-                    </li>
-                    <li><a href="{{ url('administrador/usuarios') }}"
-                        class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded gap-2"><svg
-                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-users-round">
-                            <path d="M18 21a8 8 0 0 0-16 0" />
-                            <circle cx="10" cy="8" r="5" />
-                            <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
-                        </svg><span>Personal</span></a></li>
-                        <li><a href="{{ url('administrador/clientes') }}"
-                        class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded gap-2"><svg
-                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-users-round">
-                            <path d="M18 21a8 8 0 0 0-16 0" />
-                            <circle cx="10" cy="8" r="5" />
-                            <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
-                        </svg><span>Clientes</span></a></li>
-                        <li>
-                            <a href="{{ url('administrador/maniobras') }}"
-                            class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-                            </svg><span>{{ __("Maniobras")}}</span></a></li>
-                    <li><a href="{{ url('administrador/users') }}"
-                            class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-chart-line"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m16 13-3.5 3.5-2-2L8 17"/></svg><span>{{ __("Reportes")}}</span></a></li>
-                            
-                            <li><a href="{{ url('administrador/configuracion') }}"
-                                class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wrench"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                                </svg><span>{{ __("Configuración")}}</span></a></li>
-                    
-                </ul>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                <div class="space-y-1">
+                    <a href="{{ url('administrador/dashboard') }}" 
+                       class="nav-link {{ request()->is('administrador/dashboard*') ? 'active' : '' }}">
+                        <div class="flex items-center space-x-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <span>Dashboard</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url('administrador/clientes') }}" 
+                       class="nav-link {{ request()->is('administrador/clientes*') ? 'active' : '' }}">
+                        <div class="flex items-center space-x-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <span>Clientes</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url('administrador/maniobras') }}" 
+                       class="nav-link {{ request()->is('administrador/maniobras*') ? 'active' : '' }}">
+                        <div class="flex items-center space-x-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <span>Maniobras</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url('administrador/usuarios') }}" 
+                       class="nav-link {{ request()->is('administrador/usuarios*') ? 'active' : '' }}">
+                        <div class="flex items-center space-x-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <span>Personal</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url('administrador/reportes') }}" 
+                       class="nav-link {{ request()->is('administrador/reportes*') ? 'active' : '' }}">
+                        <div class="flex items-center space-x-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <span>Reportes</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url('administrador/configuracion') }}" 
+                       class="nav-link {{ request()->is('administrador/configuracion*') ? 'active' : '' }}">
+                        <div class="flex items-center space-x-3">
+                            <div class="nav-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <span>Configuración</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Settings Section -->
+                <div class="pt-6 mt-6 border-t border-gray-100">
+                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Sistema</h3>
+                    <div class="space-y-1">
+                        <a href="{{ url('administrador/configuracion') }}" class="nav-link">
+                            <div class="flex items-center space-x-3">
+                                <div class="nav-icon">
+                                    <i class="fas fa-wrench"></i>
+                                </div>
+                                <span>Configuración</span>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="nav-link">
+                            <div class="flex items-center space-x-3">
+                                <div class="nav-icon">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <span>Ayuda</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </nav>
-            <div class="p-4">
-                <form action="{{ route('logout') }}" method="post">
+
+            <!-- Logout Button -->
+            <div class="p-4 border-t border-gray-100">
+                <form action="{{ route('logout') }}" method="post" class="w-full">
                     @csrf
-                    <button type="submit" class="w-full bg-red-500 text-white py-2 px-4 rounded flex gap-2 justify-center items-center cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg><span>{{ __('Salir del Panel') }}</span></button>
+                    <button type="submit" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg font-medium transition-colors duration-200 group">
+                        <i class="fas fa-sign-out-alt group-hover:scale-110 transition-transform duration-200"></i>
+                        <span>Cerrar Sesión</span>
+                    </button>
                 </form>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <div class="grow p-6">
-            <!-- Header -->
-            <header class="flex justify-between items-center mb-6">
-                <div class="flex justify-start items-center gap-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" id="menuButton" class="lucide lucide-menu lg:hidden cursor-pointer">
-                        <line x1="4" x2="20" y1="12" y2="12" />
-                        <line x1="4" x2="20" y1="6" y2="6" />
-                        <line x1="4" x2="20" y1="18" y2="18" />
-                    </svg>
-                    <h1 class="text-2xl font-semibold">{{ $title }}</h1>
-                </div>
-                <div class="flex items-center gap-4">
-                    <input type="text" placeholder="" class="border rounded-lg px-4 py-2 w-72">
-                    <div class="flex items-center gap-2">
-                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="User"
-                            class="w-10 h-10 rounded-full">
-                        <span>{{ Auth::user()->name }}</span>
+        <div class="flex-1 flex flex-col min-h-screen lg:ml-0">
+            <!-- Top Header -->
+            <header class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-40">
+                <div class="max-w-full mx-auto px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <!-- Left side -->
+                        <div class="flex items-center space-x-4">
+                            <button id="menuButton" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                                <i class="fas fa-bars text-gray-600"></i>
+                            </button>
+                            
+                            <div>
+                                <h1 class="text-2xl font-bold text-gray-900">{{ $title ?? 'Dashboard' }}</h1>
+                                <p class="text-sm text-gray-500">{{ now()->format('l, F j, Y') }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Right side -->
+                        <div class="flex items-center space-x-4">
+                            <!-- Search -->
+                            <div class="relative hidden md:block">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" 
+                                       placeholder="Buscar..." 
+                                       class="w-80 pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200">
+                            </div>
+
+                            <!-- Notifications -->
+                            <button class="relative p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                            </button>
+
+                            <!-- Theme Toggle -->
+                            <button class="p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg">
+                                <i class="fas fa-moon text-xl"></i>
+                            </button>
+
+                            <!-- Profile Dropdown -->
+                            <div class="relative">
+                                <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=4f46e5&color=ffffff&size=32" 
+                                         alt="User" class="w-8 h-8 rounded-full">
+                                    <span class="hidden md:block text-sm font-medium text-gray-700">{{ Auth::user()->name }}</span>
+                                    <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            @if (session('success'))
-                <div class="p-4 mb-2 bg-green-600 text-white rounded shadow-md w-full">
-                    {{ session('success') }}
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-auto">
+                <div class="p-6">
+                    <!-- Flash Messages -->
+                    @if (session('success'))
+                        <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-center space-x-3">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span>{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg flex items-center space-x-3">
+                            <i class="fas fa-exclamation-circle text-red-500"></i>
+                            <span>{{ session('error') }}</span>
+                        </div>
+                    @endif
+
+                    @yield('main')
                 </div>
-            @endif
-
-            @if (session('error'))
-                <div class="p-4 mb-2 bg-red-600 text-white rounded shadow-md w-full">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            @yield('main')
-
-
-
+            </main>
         </div>
     </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
     @livewireScripts
-    <script src="{{ asset('js/lucide.js') }}"></script>
+    @stack('scripts')
+
+    <style>
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .nav-link {
+            @apply flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg transition-all duration-200 hover:bg-indigo-50 hover:text-indigo-700 group;
+        }
+        
+        .nav-link.active {
+            @apply bg-indigo-600 text-white shadow-md;
+        }
+        
+        .nav-link.active .nav-icon {
+            @apply text-white;
+        }
+        
+        .nav-icon {
+            @apply w-5 h-5 flex items-center justify-center text-gray-500 group-hover:text-indigo-600;
+        }
+        
+        .nav-link.active .nav-icon {
+            @apply text-white;
+        }
+    </style>
+
     <script>
+        // Sidebar toggle functionality
         const menuButton = document.getElementById('menuButton');
         const menuCloseButton = document.getElementById('menuCloseButton');
         const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-        menuButton.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        }
+
+        menuButton?.addEventListener('click', toggleSidebar);
+        menuCloseButton?.addEventListener('click', toggleSidebar);
+        sidebarOverlay?.addEventListener('click', toggleSidebar);
+
+        // Close sidebar on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+            }
         });
 
-        menuCloseButton.addEventListener('click', () => {
-            sidebar.classList.remove('open');
+        // Auto-close sidebar on mobile after navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    setTimeout(toggleSidebar, 150);
+                }
+            });
         });
-
-        window.addEventListener('resize', function(event) {
-            if (document.body.clientWidth < 1024)
-                sidebar.classList.remove('open');
-            else
-                sidebar.classList.add('open');
-        }, true);
     </script>
-    @yield('scripts')
 </body>
 
 </html>

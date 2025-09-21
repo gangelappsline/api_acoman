@@ -24,7 +24,7 @@ class CheckRouteRole
         $currentRoute = $request->path(); // Ej: "admin/dashboard"
 
         // 2. Verificar si la ruta comienza con el nombre del rol
-        $routePrefix = explode('/', $currentRoute)[0]; // Obtiene el primer segmento (ej: "admin")
+        $routePrefix = explode('/', $currentRoute)[2]; // Obtiene el primer segmento (ej: "admin")
         
         if ($routePrefix !== $userRole) {
             abort(403, 'No tienes permiso para acceder a esta ruta.');

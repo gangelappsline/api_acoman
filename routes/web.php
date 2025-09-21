@@ -6,6 +6,11 @@ use App\Models\Maneuver;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/notificaciones/test', [Controllers\NotificationController::class, 'testForm'])->name('notifications.test.form');
+    Route::post('/notificaciones/test', [Controllers\NotificationController::class, 'sendTestNotification'])->name('notifications.test');
+    Route::post('/notificaciones/maniobra', [Controllers\NotificationController::class, 'sendManeuverNotification'])->name('notifications.maneuver');
+    Route::get('/notificaciones/info', [Controllers\NotificationController::class, 'getAppInfo'])->name('notifications.info');
+
 
 Route::get('/test-email', function () {
     $maneuver = Maneuver::find(1); // Replace with a valid maneuver ID or create a new one for testing
@@ -25,6 +30,18 @@ Route::get('/test-push', function () {
     $data = ["time" => date("YmdHis"), "image" => asset("images/logo_icon.png"), "title" => "Su cuenta ha sido verificada correctamente", "body" => "Hemos aprobado su solicitud para ser un ofertante en Kigadu", "route" => '/']; // Define your notification data here
     sendNotification("Su cuenta ha sido verificada correctamente", "Hemos aprobado su solicitud para ser un ofertante en Kigadu", [$token], $data);
 });
+
+Route::get('/onesignal-debug', function () {
+    return view('onesignal-debug');
+})->name('onesignal.debug');
+
+Route::get('/onesignal-minimal', function () {
+    return view('onesignal-minimal');
+})->name('onesignal.minimal');
+
+Route::get('/onesignal-test', function () {
+    return view('onesignal-test');
+})->name('onesignal.test');
 
 Route::get('/',  [Controllers\AuthController::class, 'login'])->name('login');
 
@@ -52,6 +69,9 @@ Route::prefix('administrador')->middleware(['auth', 'check.route.role'])->group(
     Route::resource('/maniobras', Controllers\Admin\ManueverController::class);
     Route::resource('/alertas', Controllers\Admin\AlertController::class);
     Route::resource('/reportes', Controllers\Admin\ConfigurationController::class);
+    
+    // Rutas de notificaciones
+    
 });
 
 // Rutas para CLIENTE (prefijo: "cliente")

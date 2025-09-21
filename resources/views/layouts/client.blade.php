@@ -8,7 +8,12 @@
     <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-    @vite('resources/css/app.css')
+    @if(env('APP_ENV') == 'production')
+    <link rel="stylesheet" href="{{ asset('build/assets/app-DDxjqB61.css') }}">
+    @else
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         /* Hide sidebar by default on small screens */
         #sidebar {

@@ -35,9 +35,29 @@ Route::prefix('/v1')->group(function () {
     Route::post('/me', [Controllers\API\V1\AuthenticationController::class, 'update']);
     Route::post('/logout', [Controllers\API\V1\AuthenticationController::class, 'logout']);
 
+    Route::resource('/users', Controllers\API\V1\Admin\UserController::class);
+
     Route::resource('/maneuvers', Controllers\API\V1\ManeuverController::class);
     Route::resource('/maneuvers/{id}/files', Controllers\API\V1\ManeuverFileController::class);
   });
-});
 
-Route::prefix('administrador')->middleware(['auth:api', 'check.route.role'])->group(function () {});
+  Route::prefix('administrador')->middleware(['auth:api', 'check.route.role'])->group(function () {
+    Route::resource('/maniobras', Controllers\API\V1\Admin\ManueverController::class);
+    Route::resource('/usuarios', Controllers\API\V1\Admin\UserController::class);
+    Route::resource('/clientes', Controllers\API\V1\Admin\ClientController::class);
+    Route::resource('/dashboard', Controllers\API\V1\Admin\DashboardController::class);
+  });
+
+  Route::prefix('cliente')->middleware(['auth:api', 'check.route.role'])->group(function () {
+    Route::resource('/maniobras', Controllers\API\V1\Client\ManeuverController::class);
+  });
+
+  Route::prefix('caseta')->middleware(['auth:api', 'check.route.role'])->group(function () {
+    Route::resource('/maniobras', Controllers\API\V1\Toll\ManeuverController::class);
+    Route::resource('/usuarios', Controllers\API\V1\Toll\ManeuverController::class);
+  });
+
+  Route::prefix('supervisor')->middleware(['auth:api', 'check.route.role'])->group(function () {});
+
+  Route::prefix('contador')->middleware(['auth:api', 'check.route.role'])->group(function () {});
+});
