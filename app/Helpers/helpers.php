@@ -5,7 +5,7 @@ use Kreait\Firebase\Messaging\CloudMessage;
 function sendNotification($title, $body, $tokens, $notification_data = [])
 {
     $firebase = (new Factory)
-            ->withServiceAccount(__DIR__.'/../../config/acoman-805a5-firebase-adminsdk-fbsvc-d318e7f1d4.json');
+            ->withServiceAccount(__DIR__.'/../../config/acoman-805a5-firebase-adminsdk-fbsvc-6cd09c3d97.json');
  
         $messaging = $firebase->createMessaging();
 

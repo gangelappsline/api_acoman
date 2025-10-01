@@ -34,6 +34,7 @@ Route::prefix('/v1')->group(function () {
     Route::get('/user', [Controllers\API\V1\AuthenticationController::class, 'show']);
     Route::post('/me', [Controllers\API\V1\AuthenticationController::class, 'update']);
     Route::post('/logout', [Controllers\API\V1\AuthenticationController::class, 'logout']);
+    Route::post('/firebase-register', [Controllers\API\V1\AuthenticationController::class, 'firebaseRegister']);
 
     Route::resource('/users', Controllers\API\V1\Admin\UserController::class);
 
@@ -46,18 +47,36 @@ Route::prefix('/v1')->group(function () {
     Route::resource('/usuarios', Controllers\API\V1\Admin\UserController::class);
     Route::resource('/clientes', Controllers\API\V1\Admin\ClientController::class);
     Route::resource('/dashboard', Controllers\API\V1\Admin\DashboardController::class);
+    Route::resource('/reportes', Controllers\API\V1\Admin\ReportController::class);
+    Route::resource('/companias', Controllers\API\V1\Admin\CompanyController::class);
   });
 
   Route::prefix('cliente')->middleware(['auth:api', 'check.route.role'])->group(function () {
     Route::resource('/maniobras', Controllers\API\V1\Client\ManeuverController::class);
+    Route::resource('/maniobras/{id}/payments', Controllers\API\V1\Client\ManeuverPaymentController::class)->only(['index', 'store']);
   });
 
   Route::prefix('caseta')->middleware(['auth:api', 'check.route.role'])->group(function () {
     Route::resource('/maniobras', Controllers\API\V1\Toll\ManeuverController::class);
-    Route::resource('/usuarios', Controllers\API\V1\Toll\ManeuverController::class);
+    Route::resource('/maniobras/{id}/archivos', Controllers\API\V1\Toll\ManeuverFileController::class)->only(['index', 'store']);
+    Route::resource('/maniobras/{id}/pagos', Controllers\API\V1\Toll\ManeuverPaymentController::class)->only(['index', 'store']);
   });
 
   Route::prefix('supervisor')->middleware(['auth:api', 'check.route.role'])->group(function () {});
 
-  Route::prefix('contador')->middleware(['auth:api', 'check.route.role'])->group(function () {});
+  Route::prefix('recepcionista')->middleware(['auth:api', 'check.route.role'])->group(function () {
+    Route::resource('/maniobras', Controllers\API\V1\Receptionist\ManeuverController::class);
+    Route::resource('/clientes', Controllers\API\V1\Receptionist\ClientController::class);
+    Route::resource('/dashboard', Controllers\API\V1\Receptionist\DashboardController::class);
+    Route::resource('/reportes', Controllers\API\V1\Receptionist\ReportController::class);
+  });
+
+  Route::prefix('contador')->middleware(['auth:api', 'check.route.role'])->group(function () {
+    Route::resource('/maniobras', Controllers\API\V1\Counter\ManueverController::class);
+    Route::resource('/maniobras/{id}/pagos', Controllers\API\V1\Counter\ManueverPaymentController::class)->only(['index', 'store']);
+    Route::resource('/reportes', Controllers\API\V1\Counter\ReportController::class);
+    Route::resource('/clientes', Controllers\API\V1\Counter\ClientController::class);
+    Route::resource('/dashboard', Controllers\API\V1\Counter\DashboardController::class);
+    
+  });
 });

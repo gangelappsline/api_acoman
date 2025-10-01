@@ -123,4 +123,20 @@ class AuthenticationController extends BaseController
 
         return $this->sendResponse($request->user(), 'Successfully logged out');
     }
+
+    public function firebaseRegister(Request $request)
+    {
+        $request->validate([
+            'firebase_web_token' => 'required|string|max:255',
+        ]);
+
+        $user = User::find($request->user()->id);
+        if ($user) {
+            $user->firebase_web_token = $request->firebase_web_token;
+            $user->save();
+            return $this->sendResponse($user, 'Firebase token registered successfully.');
+        } else {
+            return $this->sendError('Unauthorized.', ['error' => 'Unauthorised'], 401);
+        }
+    }
 }

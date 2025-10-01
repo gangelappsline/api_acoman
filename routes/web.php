@@ -2,6 +2,7 @@
 
 use App\Http\Controllers;
 use App\Mail\ManeuverAdminNotification;
+use App\Mail\NewManeuverNotification;
 use App\Models\Maneuver;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -13,8 +14,9 @@ Route::get('/notificaciones/test', [Controllers\NotificationController::class, '
 
 
 Route::get('/test-email', function () {
-    $maneuver = Maneuver::find(1); // Replace with a valid maneuver ID or create a new one for testing
+    $maneuver = Maneuver::find(10); // Replace with a valid maneuver ID or create a new one for testing
     try {
+        Mail::to("angelgrcroguez@gmail.com")->send(new NewManeuverNotification($maneuver));
        Mail::to("angelgrcroguez@gmail.com")->send(new ManeuverAdminNotification($maneuver));
     return "Email sent successfully!";
     } catch (\Exception $e) {
@@ -26,9 +28,9 @@ Route::get('/test-email', function () {
 });
 
 Route::get('/test-push', function () {
-    $token = "d_Ax7jbOTvmrTl6sZUT0XH:APA91bHI7oXRHdRHR2mfMlyS2SqJRy6DEyHVvQGriulMs4B4w2JDGFKBjRtJG3dKbglPnDRHbIqTJfBopH6K2Ynmi6EgIN_4o1Z0Ud8ZqP3gtpEl6WrkNgQ";
-    $data = ["time" => date("YmdHis"), "image" => asset("images/logo_icon.png"), "title" => "Su cuenta ha sido verificada correctamente", "body" => "Hemos aprobado su solicitud para ser un ofertante en Kigadu", "route" => '/']; // Define your notification data here
-    sendNotification("Su cuenta ha sido verificada correctamente", "Hemos aprobado su solicitud para ser un ofertante en Kigadu", [$token], $data);
+    $token = "eYMvfHoN_IIxwyVNqqpZPV:APA91bFi98FuXDQ8rgsXvTmqG5flHKQuuyv5mr8btulNFoG42Ut8uFVAkgQ0CfLZ9ia4fRYH3CsVyfiEgWDVLlTIHun1i2UUVSTRszWWZQpWTeD3VlsqN7o";
+    $data = ["time" => date("YmdHis"), "image" => asset("images/logo.png"), "title" => "Acoman - Actualización de Maniobra", "body" => "La maniobra #123 cambio su estado a aceptada", "route" => '/']; // Define your notification data here
+    sendNotification("Acoman - Actualización de Maniobra", "La maniobra #123 cambio su estado a aceptada", [$token], $data);
 });
 
 Route::get('/onesignal-debug', function () {

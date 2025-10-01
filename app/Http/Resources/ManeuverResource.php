@@ -31,6 +31,7 @@ class ManeuverResource extends JsonResource
             'check_in_user' => $this->checkInUser ? $this->checkInUser->name : null,
             'check_out_user' => $this->checkOutUser ? $this->checkOutUser->name : null,
             'presentation' => $this->presentation,
+            'payments' => $this->payments,
             'company' => $this->company,
             'importer' => $this->importer,
             'folio_200' => $this->folio_200,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1\Admin;
 use App\Http\Controllers\API\BaseController;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ClientController extends BaseController
 {
@@ -30,7 +31,7 @@ class ClientController extends BaseController
             $query->orderBy($sortField, $sortDirection);
         } else { $query->orderBy('name', 'asc'); }
         
-        $clients = $query->with('company')->paginate(15);
+        $clients = $query->with('company')->get();
         return $this->sendResponse($clients, 'Clients retrieved successfully.');
     }
 
@@ -42,16 +43,54 @@ class ClientController extends BaseController
 
     public function store(Request $request)
     {
-        return $this->sendError('Not implemented', [], 501);
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:7',
+            'credit'=>'required',
+            'status'=>'required',
+        ]);
+
+        $cliente = new User();
+        $cliente->name = $request->name;
+        $cliente->email = $request->email;
+        $cliente->password = Hash::make($request->password);
+        $cliente->credit = $request->credit;
+        $cliente->status = $request->status;
+        $cliente->role = 'cliente';
+        $cliente->save();
+
+        return $this->sendResponse($cliente, 'Client created successfully.');
     }
 
     public function update(Request $request, $id)
     {
-        return $this->sendError('Not implemented', [], 501);
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|min:7',
+            'credit'=>'required',
+            'active'=>'required',
+        ]);
+
+        $cliente = User::where('role', 'cliente')->findOrFail($id);
+        $cliente->name = $request->name;
+        $cliente->email = $request->email;
+        if ($request->filled('password')) {
+            $cliente->password = Hash::make($request->password);
+        }
+        $cliente->credit = $request->credit;
+        $cliente->active = $request->active;
+        $cliente->role = 'cliente';
+        $cliente->save();
+
+        return $this->sendResponse($cliente, 'Client updated successfully.');
     }
 
     public function destroy($id)
     {
-        return $this->sendError('Not implemented', [], 501);
+        $cliente = User::where('role', 'cliente')->findOrFail($id);
+        $cliente->delete();
+        return $this->sendResponse([], 'Client deleted successfully.');
     }
 }
