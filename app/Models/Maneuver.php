@@ -32,9 +32,19 @@ class Maneuver extends Model
         'bulks' => 'float',
     ];
 
+    public function extensions()
+    {
+        return $this->hasMany(ManeuverExtension::class);
+    }
+
     public function client()
     {
         return $this->belongsTo(User::class, 'client_id');
+    }
+
+    public function containers()
+    {
+        return $this->hasMany(ManeuverContainer::class);
     }
 
     public function payments()
@@ -60,5 +70,10 @@ class Maneuver extends Model
     public function checkOutUser()
     {
         return $this->belongsTo(User::class, 'user_check_out');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
     }
 }

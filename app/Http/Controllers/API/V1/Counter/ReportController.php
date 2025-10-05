@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API\V1\Counter;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ManeuverPaymentResource;
+use App\Models\ManeuverPayment;
 use Illuminate\Http\Request;
 
 class ReportController extends BaseController
@@ -14,20 +16,25 @@ class ReportController extends BaseController
     public function index()
     {
         //Toma toda la información de las maniobras del mes actual, es posible que te envien parametros para filtrar por rango de fecha, por clientes y si la maniobra esta pagada o no
-        $query = \App\Models\Maneuver::query();
+        //$query = \App\Models\Maneuver::query();
+        $query = ManeuverPayment::query();
         if(request()->query('from')) {
             $query->whereDate('created_at', '>=', request()->query('from'));
         }
         if(request()->query('to')) {
             $query->whereDate('created_at', '<=', request()->query('to'));
         }
-        if(request()->query('client_id')) {
-            $query->where('client_id', request()->query('client_id'));
-        }
         if(request()->query('paid')) {
-            $query->where('paid', request()->query('paid'));
+            $query->where('status', request()->query('paid') == true ? 'confirmada':'pendiente');
         }
-        $maneuvers =  $query->get();
+
+        if(request()->query('payment_method')) {
+            $query->where('payment_method', request()->query('payment_method'));
+        }
+        $maneuvers =  $query->with('maneuver')->get();
+        foreach ($maneuvers as $key => $maneuver) {
+            $maneuver->client = $maneuver->maneuver->client;
+        }
         return $this->sendResponse($maneuvers, 'Maneuvers retrieved successfully.');
     }
 

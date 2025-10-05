@@ -21,16 +21,29 @@ class ServiceController extends BaseController
 
     public function store(Request $request)
     {
-        return $this->sendError('Not implemented', [], 501);
+        $request->validate([
+            'name' => 'required|unique:services,name',
+        ]);
+
+        $service = Service::create($request->only('name', 'price'));
+        return $this->sendResponse($service, 'Service created successfully.', 201);
     }
 
     public function update(Request $request, $id)
     {
-        return $this->sendError('Not implemented', [], 501);
+        $request->validate([
+            'name' => 'required|unique:services,name,' . $id,
+        ]);
+
+        $service = Service::findOrFail($id);
+        $service->update($request->only('name', 'price'));
+        return $this->sendResponse($service, 'Service updated successfully.');
     }
 
     public function destroy($id)
     {
-        return $this->sendError('Not implemented', [], 501);
+        $service = Service::findOrFail($id);
+        $service->delete();
+        return $this->sendResponse(null, 'Service deleted successfully.');
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-class ManeuverFileResource extends JsonResource
+class ManeuverExtensionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,9 +19,13 @@ class ManeuverFileResource extends JsonResource
 
             'id' => $this->id,
             'type' => $this->type,
-            'file_extension' => $this->file_extension,
-            'name' => $this->name,
-            'path' => Storage::disk("public")->url($this->path),
+            'days' => $this->days,
+            'total' => $this->total,
+            'file' => Storage::disk("public")->url($this->file),
+            'paid' => $this->paid,
+            'notes' => $this->notes,
+            'created_by' => $this->created_by == null ? null : $this->user,
+            'created_at' => $this->created_at,
         ];
     }
 }

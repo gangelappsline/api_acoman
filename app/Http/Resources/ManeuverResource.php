@@ -21,7 +21,7 @@ class ManeuverResource extends JsonResource
             'status' => $this->status,
             'pediment' => $this->pediment,
             'patent' => $this->patent,
-            'container' => $this->container,
+            'containers' => ManeuverContainerResource::collection($this->containers),
             'product' => $this->product,
             'type' => $this->type,
             'country' => $this->country,
@@ -31,7 +31,7 @@ class ManeuverResource extends JsonResource
             'check_in_user' => $this->checkInUser ? $this->checkInUser->name : null,
             'check_out_user' => $this->checkOutUser ? $this->checkOutUser->name : null,
             'presentation' => $this->presentation,
-            'payments' => $this->payments,
+            'payments' => ManeuverPaymentResource::collection($this->payments),
             'company' => $this->company,
             'importer' => $this->importer,
             'folio_200' => $this->folio_200,
@@ -39,6 +39,7 @@ class ManeuverResource extends JsonResource
             'created_at' => $this->created_at,
             'client' => $this->client,
             'files' => ManeuverFileResource::collection($this->files),
+            'extensions' => ManeuverExtensionResource::collection($this->extensions),
         ];
     }
 }

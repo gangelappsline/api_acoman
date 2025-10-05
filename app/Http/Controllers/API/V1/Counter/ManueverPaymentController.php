@@ -83,9 +83,20 @@ class ManueverPaymentController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $maneuverId, string $id)
     {
-        //
+        if($request->has("status")) {
+            $payment = ManeuverPayment::findOrFail($id);
+            $payment->status = $request->input("status");
+            if($request->status == "rechazada") {
+                $payment->rejected_by = $request->user()->id;
+                $payment->rejected_notes = $request->input("reject_notes");
+            }
+            $payment->save();
+            return $this->sendResponse($payment, 'Payment updated successfully.');
+        }
+
+
     }
 
     /**

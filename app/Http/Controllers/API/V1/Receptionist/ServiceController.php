@@ -1,18 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Recepcionist;
+namespace App\Http\Controllers\API\V1\Receptionist;
 
+use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ServiceResource;
 use Illuminate\Http\Request;
 
-class ClientController extends Controller
+class ServiceController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $services = \App\Models\Service::all();
+        return $this->sendResponse(ServiceResource::collection($services), 'Services retrieved successfully.');
     }
 
     /**

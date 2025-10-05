@@ -5,7 +5,10 @@ namespace App\Http\Controllers\API\V1\Receptionist;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Mail\WelcomeClientNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class ClientController extends BaseController
 {
@@ -35,15 +38,31 @@ class ClientController extends BaseController
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
+            'credit' => 'nullable|numeric|min:0',
+            'validation' => 'nullable|boolean',
         ]);
+        
+        // Guardar la contraseña original antes de encriptarla
+        $originalPassword = $request->password;
         
         $client = new User();
         $client->name = $request->name;
         $client->email = $request->email;
         $client->role = 'cliente';
         $client->password = bcrypt($request->password);
+        $client->credit = $request->credit ?? 0; // Valor por defecto
+        $client->need_validation = $request->validation ?? true; // Valor por defecto
         $client->save();
-        return $this->sendResponse($client, 'Client created successfully.');
+
+        // Enviar correo de bienvenida
+        try {
+            Mail::to($client->email)->send(new WelcomeClientNotification($client, $originalPassword));
+        } catch (\Exception $e) {
+            Log::error('Error enviando correo de bienvenida: ' . $e->getMessage());
+            // No fallar la creación del cliente si el correo falla
+        }
+
+        return $this->sendResponse($client, 'Client created successfully and welcome email sent.');
     }
 
     /**

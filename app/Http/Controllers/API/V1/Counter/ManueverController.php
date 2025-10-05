@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1\Counter;
 
 use App\Http\Controllers\API\BaseController;
+use App\Http\Resources\ManeuverResource;
 use App\Models\Maneuver;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -45,7 +46,7 @@ class ManueverController extends BaseController
             ->orderBy('created_at', 'desc')
             ->get();
             
-        return $this->sendResponse($maneuvers, 'Previous day maneuvers retrieved successfully.');
+        return $this->sendResponse(ManeuverResource::collection($maneuvers), 'Previous day maneuvers retrieved successfully.');
     }
 
     /**
@@ -54,7 +55,7 @@ class ManueverController extends BaseController
     public function show(string $id)
     {
         $maneuver = Maneuver::findOrFail($id);
-        return $this->sendResponse($maneuver, 'Maneuver retrieved successfully.');
+        return $this->sendResponse(new ManeuverResource($maneuver), 'Maneuver retrieved successfully.');
     }
 
     /**

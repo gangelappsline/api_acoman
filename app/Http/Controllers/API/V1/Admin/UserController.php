@@ -47,6 +47,13 @@ class UserController extends BaseController
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->role = $request->role;
+        if($request->has('isActive')){
+            if($request->isActive){
+                $user->status = 'Activo';
+            } else {
+                $user->status = 'Inactivo';
+            }
+        }
         $user->save();
         return response()->json(['success' => true, 'user' => $user]);
     }

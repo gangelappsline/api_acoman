@@ -40,7 +40,9 @@ class ManeuverController extends BaseController
      */
     public function show(string $id)
     {
-        //
+        $maneuver = Maneuver::findOrFail($id);
+        
+        return $this->sendResponse(new ManeuverResource($maneuver), 'Maneuver retrieved successfully.');
     }
 
     /**
@@ -58,6 +60,9 @@ class ManeuverController extends BaseController
     {
         $maneuver = Maneuver::findOrFail($id);
         $maneuver->status = $request->status;
+        if($request->status == 'rechazada'){
+            $maneuver->rejected_notes = $request->rejected_notes;
+        }
         $maneuver->save();
 
         if ($maneuver->wasChanged('status')) {

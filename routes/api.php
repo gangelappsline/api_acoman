@@ -49,6 +49,7 @@ Route::prefix('/v1')->group(function () {
     Route::resource('/dashboard', Controllers\API\V1\Admin\DashboardController::class);
     Route::resource('/reportes', Controllers\API\V1\Admin\ReportController::class);
     Route::resource('/companias', Controllers\API\V1\Admin\CompanyController::class);
+    Route::resource('/servicios', Controllers\API\V1\Admin\ServiceController::class);
   });
 
   Route::prefix('cliente')->middleware(['auth:api', 'check.route.role'])->group(function () {
@@ -66,14 +67,18 @@ Route::prefix('/v1')->group(function () {
 
   Route::prefix('recepcionista')->middleware(['auth:api', 'check.route.role'])->group(function () {
     Route::resource('/maniobras', Controllers\API\V1\Receptionist\ManeuverController::class);
+    Route::resource('/maniobras/{id}/extensiones', Controllers\API\V1\Receptionist\ManeuverExtensionController::class)->only(['index', 'store']);
+    Route::resource('/maniobras/{id}/archivos', Controllers\API\V1\Receptionist\ManeuverFileController::class)->only(['index', 'store']);
     Route::resource('/clientes', Controllers\API\V1\Receptionist\ClientController::class);
     Route::resource('/dashboard', Controllers\API\V1\Receptionist\DashboardController::class);
     Route::resource('/reportes', Controllers\API\V1\Receptionist\ReportController::class);
+    Route::resource('/servicios', Controllers\API\V1\Receptionist\ServiceController::class)->only(['index']);
   });
 
   Route::prefix('contador')->middleware(['auth:api', 'check.route.role'])->group(function () {
     Route::resource('/maniobras', Controllers\API\V1\Counter\ManueverController::class);
-    Route::resource('/maniobras/{id}/pagos', Controllers\API\V1\Counter\ManueverPaymentController::class)->only(['index', 'store']);
+    Route::resource('/maniobras/{id}/pagos', Controllers\API\V1\Counter\ManueverPaymentController::class)->only(['index', 'store', 'update']);
+    Route::resource('/maniobras/{id}/archivos', Controllers\API\V1\Counter\ManueverFileController::class)->only(['index', 'store']);
     Route::resource('/reportes', Controllers\API\V1\Counter\ReportController::class);
     Route::resource('/clientes', Controllers\API\V1\Counter\ClientController::class);
     Route::resource('/dashboard', Controllers\API\V1\Counter\DashboardController::class);
