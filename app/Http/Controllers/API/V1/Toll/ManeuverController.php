@@ -18,7 +18,7 @@ class ManeuverController extends BaseController
     public function index()
     {
         //Today maneuvers for toll
-        $maneuvers = Maneuver::where("programming_date", today())->get();
+        $maneuvers = Maneuver::all();
         return $this->sendResponse(ManeuverResource::collection($maneuvers), 'Maneuvers retrieved successfully.');
     }
 
