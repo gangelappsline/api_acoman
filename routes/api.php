@@ -50,6 +50,7 @@ Route::prefix('/v1')->group(function () {
     Route::resource('/reportes', Controllers\API\V1\Admin\ReportController::class);
     Route::resource('/companias', Controllers\API\V1\Admin\CompanyController::class);
     Route::resource('/servicios', Controllers\API\V1\Admin\ServiceController::class);
+    Route::resource('/agencias', Controllers\API\V1\Admin\AgencyController::class);
   });
 
   Route::prefix('cliente')->middleware(['auth:api', 'check.route.role'])->group(function () {
