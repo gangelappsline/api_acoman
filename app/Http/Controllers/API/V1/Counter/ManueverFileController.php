@@ -54,6 +54,7 @@ class ManueverFileController extends BaseController
             $maneuverFile->type = $request->type;
             $maneuverFile->path = $path."/" . strtolower($request->type) . "." . $file->getClientOriginalExtension();
             $maneuverFile->file_extension = $file->getClientOriginalExtension();
+            $maneuverFile->file_size = $file->getSize();
             $maneuverFile->save();
 
             if($request->type == 'Factura') {

@@ -37,6 +37,7 @@ class ManeuverController extends BaseController
                 'pediment' => 'required|string|max:255',
                 'patent' => "required|string|max:255",
                 'container' => "required|string|max:255",
+                'service_id' => "required|exists:services,id",
                 'product' => "required",
                 'country' => "required",
                 'bulks' => "required",
@@ -52,6 +53,7 @@ class ManeuverController extends BaseController
             $maneuver->client_id = $request->user()->id;
             $maneuver->created_by = $request->user()->id;
             $maneuver->pediment = $request->pediment;
+            $maneuver->service_id = $request->service_id;
             $maneuver->patent = $request->patent;
             $maneuver->container = $request->container;
             $maneuver->product = $request->product;
@@ -59,6 +61,7 @@ class ManeuverController extends BaseController
             $maneuver->bulks = $request->bulks;
             $maneuver->presentation = $request->presentation;
             $maneuver->importer = $request->importer;
+            $maneuver->total = $request->total == '' ? 0 : $request->total;
             $maneuver->folio_200 = $request->folio_200;
             $maneuver->folio_500 = $request->folio_500;
             $maneuver->company = $request->agency;

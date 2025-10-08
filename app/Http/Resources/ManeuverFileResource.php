@@ -20,6 +20,7 @@ class ManeuverFileResource extends JsonResource
             'id' => $this->id,
             'type' => $this->type,
             'file_extension' => $this->file_extension,
+            'file_size' => $this->file_size,
             'name' => $this->name,
             'path' => Storage::disk("public")->url($this->path),
         ];

@@ -40,6 +40,20 @@ class DashboardController extends BaseController
                     'color' => $this->getServiceColor($item->service_id)
                 ];
             });
+        //Obten la cantidad de maniobras y el total agrupadas por dia de la semana actual con el siguiente formato: { day: "Lun", maniobras: 45, ingresos: 18500 }
+        $data['weekly_distribution'] = \App\Models\Maneuver::selectRaw('COUNT(*) as maniobras, SUM(total) as ingresos, DAYOFWEEK(created_at) as dia')
+            ->whereRaw('WEEK(created_at, 1) = WEEK(CURDATE(), 1)') // Semana actual
+            ->groupBy('dia')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'day' => $this->threeLetterDay($item->dia),
+                    'maniobras' => $item->maniobras,
+                    'ingresos' => $item->ingresos
+                ];
+            });
+        //Obtener el total de usuarios con rol 'client'
+        $data['total_clients'] = \App\Models\User::where('role', 'cliente')->where("status", "Activo")->count();
         return $this->sendResponse($data, 'Dashboard data retrieved successfully.');
     }
 
@@ -66,6 +80,20 @@ class DashboardController extends BaseController
             12 => '#A78BFA' // Manipulación
         ];
         return $colors[$serviceId] ?? '#6B7280'; // Default color (gray) if service ID not found
+    }
+
+    public function threeLetterDay($day)
+    {
+        $days = [
+            1 => 'Dom',
+            2 => 'Lun',
+            3 => 'Mar',
+            4 => 'Mié',
+            5 => 'Jue',
+            6 => 'Vie',
+            7 => 'Sáb'
+        ];
+        return $days[$day] ?? '';
     }
 
     private function threeLetterMonth($month)

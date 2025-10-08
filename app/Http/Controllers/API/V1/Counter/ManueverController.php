@@ -33,10 +33,16 @@ class ManueverController extends BaseController
 
         if($request->query('from')) {
             $from = [Carbon::parse($request->query('from'))->format('Y-m-d')];
+        }else{
+            // Si no se proporciona 'from', usar la fecha de ayer
+            $from = Carbon::yesterday()->format('Y-m-d');
         }
 
         if($request->query('to')) {
             $to = [Carbon::parse($request->query('to'))->format('Y-m-d')];
+        }else{
+            // Si no se proporciona 'to', usar la fecha de ayer
+            $to = Carbon::yesterday()->format('Y-m-d');
         }
 
         $maneuvers = Maneuver::query()

@@ -33,11 +33,13 @@ class ManeuverResource extends JsonResource
             'presentation' => $this->presentation,
             'payments' => ManeuverPaymentResource::collection($this->payments),
             'company' => $this->company,
+            'total'=>$this->total,
             'importer' => $this->importer,
             'folio_200' => $this->folio_200,
             'folio_500' => $this->folio_500,
             'created_at' => $this->created_at,
             'client' => $this->client,
+            'service' => $this->service,
             'files' => ManeuverFileResource::collection($this->files),
             'extensions' => ManeuverExtensionResource::collection($this->extensions),
         ];

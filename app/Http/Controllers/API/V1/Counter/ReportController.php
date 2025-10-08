@@ -6,6 +6,7 @@ use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ManeuverPaymentResource;
 use App\Models\ManeuverPayment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ReportController extends BaseController
@@ -20,9 +21,15 @@ class ReportController extends BaseController
         $query = ManeuverPayment::query();
         if(request()->query('from')) {
             $query->whereDate('created_at', '>=', request()->query('from'));
+        }else{
+            // Si no se proporciona 'from', usar el primer día del mes actual
+            $query->whereDate('created_at', '>=', Carbon::yesterday()->format('Y-m-d'));
         }
         if(request()->query('to')) {
             $query->whereDate('created_at', '<=', request()->query('to'));
+        }else{
+            // Si no se proporciona 'from', usar el primer día del mes actual
+            $query->whereDate('created_at', '<=', Carbon::yesterday()->format('Y-m-d'));
         }
         if(request()->query('paid')) {
             $query->where('status', request()->query('paid') == true ? 'confirmada':'pendiente');

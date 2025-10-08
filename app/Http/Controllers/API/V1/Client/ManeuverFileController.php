@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Toll;
+namespace App\Http\Controllers\API\V1\Client;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Http\Resources\ManeuverFileResource;
 use App\Models\ManeuverFile;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ManeuverFileController extends BaseController
@@ -14,10 +14,9 @@ class ManeuverFileController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, $id)
+    public function index()
     {
-        $files = ManeuverFile::where("maneuver_id", $id)->get();
-        return $this->sendResponse(ManeuverFileResource::collection($files), 'Maneuver files retrieved successfully.');
+        //
     }
 
     /**
@@ -35,7 +34,7 @@ class ManeuverFileController extends BaseController
     {
         $request->validate([
             'file' => 'required|file',
-            'type' => 'required|string|in:ine,license',
+            'type' => 'required|string',
         ]);
         //This could receive different types but the keys are dynamically generated
         $data = $request->all();
@@ -56,7 +55,7 @@ class ManeuverFileController extends BaseController
 
                 $fileM = new ManeuverFile();
                 $fileM->maneuver_id = $id;
-                $fileM->type = $types[$type];
+                $fileM->type = $type;
                 $fileM->path = "maneuvers/{$id}/" . $type . "." . $file->getClientOriginalExtension();
                 $fileM->file_extension = $file->getClientOriginalExtension();
                 $fileM->file_size = $file->getSize();

@@ -56,6 +56,8 @@ Route::prefix('/v1')->group(function () {
   Route::prefix('cliente')->middleware(['auth:api', 'check.route.role'])->group(function () {
     Route::resource('/maniobras', Controllers\API\V1\Client\ManeuverController::class);
     Route::resource('/maniobras/{id}/payments', Controllers\API\V1\Client\ManeuverPaymentController::class)->only(['index', 'store']);
+    Route::resource('/maniobras/{id}/archivos', Controllers\API\V1\Client\ManeuverFileController::class)->only(['index', 'store']);
+    Route::resource('/servicios', Controllers\API\V1\Client\ServiceController::class);
   });
 
   Route::prefix('caseta')->middleware(['auth:api', 'check.route.role'])->group(function () {
@@ -83,6 +85,7 @@ Route::prefix('/v1')->group(function () {
     Route::resource('/reportes', Controllers\API\V1\Counter\ReportController::class);
     Route::resource('/clientes', Controllers\API\V1\Counter\ClientController::class);
     Route::resource('/dashboard', Controllers\API\V1\Counter\DashboardController::class);
+    Route::resource('/servicios', Controllers\API\V1\Counter\ServiceController::class);
     
   });
 });
