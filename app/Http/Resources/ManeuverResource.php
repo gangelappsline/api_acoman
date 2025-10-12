@@ -31,6 +31,8 @@ class ManeuverResource extends JsonResource
             'check_in_user' => $this->checkInUser ? $this->checkInUser->name : null,
             'check_out_user' => $this->checkOutUser ? $this->checkOutUser->name : null,
             'presentation' => $this->presentation,
+            'programming_date' => $this->programming_date,
+            'programming_date_end' => $this->programming_date_end,
             'payments' => ManeuverPaymentResource::collection($this->payments),
             'company' => $this->company,
             'total'=>$this->total,
