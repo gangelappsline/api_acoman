@@ -68,6 +68,38 @@ class ManeuverController extends BaseController
             $maneuver->programming_date = $request->programming_date;
             $maneuver->save();
 
+            $service = \App\Models\Service::find($request->service_id);
+            if ($service->double_maneuver) {
+                $maneuver2 = new Maneuver();
+                $maneuver2->parent_id = $maneuver->id;
+                $maneuver2->client_id = $request->user()->id;
+                $maneuver2->created_by = $request->user()->id;
+                $maneuver2->pediment = $request->pediment;
+                $maneuver2->service_id = $request->service_id;
+                $maneuver2->total = $request->total == '' ? 0 : $request->total / 2;
+                $maneuver2->patent = $request->patent;
+                $maneuver2->container = $request->container;
+                $maneuver2->product = $request->product;
+                $maneuver2->country = $request->country;
+                $maneuver2->bulks = $request->bulks;
+                $maneuver2->presentation = $request->presentation;
+                $maneuver2->importer = $request->importer;
+                $maneuver2->total = $request->total == '' ? 0 : $request->total;
+                $maneuver2->folio_200 = $request->folio_200;
+                $maneuver2->folio_500 = $request->folio_500;
+                $maneuver2->company = $request->agency;
+                //Suma los dias del servicio a la fecha de programacion
+                if ($service->days) {
+                    $maneuver2->programming_date_end = date('Y-m-d', strtotime($request->programming_date . " + {$service->days} days"));
+                } else {
+                    $maneuver2->programming_date_end = $request->programming_date;
+                }
+
+                $maneuver->total = $request->total == '' ? 0 : $request->total/2;
+                $maneuver->save();
+                $maneuver2->save();
+            }
+
             if ($request->has("containers")) {
                 foreach ($request->containers as $container) {
                     ManeuverContainer::create([

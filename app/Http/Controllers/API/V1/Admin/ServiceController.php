@@ -23,9 +23,19 @@ class ServiceController extends BaseController
     {
         $request->validate([
             'name' => 'required|unique:services,name',
+            'price' => 'nullable|numeric',
+            'days' => 'nullable|integer',
+            'double_maneuver' => 'nullable|boolean',
         ]);
 
-        $service = Service::create($request->only('name', 'price'));
+        //Si el campo double_maneuver viene en la request, preguntar si el valor es "on" y ponerlo en true, sino en false
+        if($request->has('double_maneuver')){
+            $request->merge(['double_maneuver' => $request->double_maneuver === 'on' ? true : false]);
+        } else {
+            $request->merge(['double_maneuver' => false]);
+        }        
+
+        $service = Service::create($request->only('name', 'price', 'days', 'double_maneuver'));
         return $this->sendResponse($service, 'Service created successfully.', 201);
     }
 
@@ -33,10 +43,13 @@ class ServiceController extends BaseController
     {
         $request->validate([
             'name' => 'required|unique:services,name,' . $id,
+            'price' => 'nullable|numeric',
+            'days' => 'nullable|integer',
+            'double_maneuver' => 'nullable|boolean',
         ]);
 
         $service = Service::findOrFail($id);
-        $service->update($request->only('name', 'price'));
+        $service->update($request->only('name', 'price', 'days', 'double_maneuver'));
         return $this->sendResponse($service, 'Service updated successfully.');
     }
 
